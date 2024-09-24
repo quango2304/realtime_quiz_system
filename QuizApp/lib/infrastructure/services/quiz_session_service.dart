@@ -35,6 +35,15 @@ class QuizHubService {
     });
   }
 
+  void onReceiveLeaderboard(Function(List<LeaderboardResponse>) callback) {
+    _hubConnection?.on('ReceiveLeaderboard', (arguments) {
+      final leaderboardResponse = (arguments![0] as List<dynamic>)
+          .map((e) => LeaderboardResponse.fromJson(e as Map<String, dynamic>))
+          .toList();
+      callback(leaderboardResponse);
+    });
+  }
+
   void onQuizEnded(Function(List<LeaderboardResponse>) callback) {
     _hubConnection?.on('QuizEnded', (arguments) {
       final leaderboardResponse = (arguments![0] as List<dynamic>)

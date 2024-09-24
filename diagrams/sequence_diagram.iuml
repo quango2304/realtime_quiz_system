@@ -24,15 +24,16 @@ QuizApp -> QuizAPI: POST /quizzes/{quizId}/start
 QuizAPI -> SignalRHub: Start quiz session
 
 loop Periodic question sending
-    SignalRHub -> QuizApp: Send question
+    SignalRHub -> QuizApp: Send question to all players
     Player -> QuizApp: Submit answer
     QuizApp -> QuizAPI: POST /quizzes/{quizId}/submit-answer
     QuizAPI -> PostgreSQL: Save answer
-
+    SignalRHub -> PostgreSQL: Fetch leaderboard
+    PostgreSQL --> SignalRHub: Leaderboard data
+    SignalRHub -> QuizApp: Send leaderboard to all players
+    QuizApp -> Player: Display
     alt When question time ends(20s)
-        SignalRHub -> PostgreSQL: Fetch leaderboard
-        PostgreSQL --> SignalRHub: Leaderboard data
-        SignalRHub -> QuizApp: Send question result and leaderboard
+        SignalRHub -> QuizApp: Send question answer to all players
         QuizApp -> Player: Display
     end
 end while (More questions remain)

@@ -116,26 +116,6 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
                 ),
               );
             }),
-            const SizedBox(height: 20),
-            const Text('Leaderboard:',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            ...(widget.results.leaderboard ?? []).asMap().entries.map((entry) {
-              int index = entry.key;
-              var leaderboardEntry = entry.value;
-              return Card(
-                color: Colors.blue[100],
-                child: ListTile(
-                  leading: Text('${index + 1}',
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
-                  title: Text(leaderboardEntry.userName ?? '',
-                      style: const TextStyle(fontSize: 18)),
-                  trailing: Text('${leaderboardEntry.totalPoints} points',
-                      style: const TextStyle(fontSize: 18)),
-                ),
-              );
-            }),
           ],
         ),
       ),

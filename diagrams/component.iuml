@@ -23,7 +23,7 @@ Player --> QuizAPI : "Submit Answer"
 QuizAPI --> PostgreSQL : "Save Data"
 PostgreSQL --> QuizAPI : "Fetch Data"
 QuizAPI --> SignalRHub : "Push Data"
-SignalRHub --> Player : "Send Questions"
-SignalRHub --> Player : "Send Leaderboard"
+SignalRHub --> Player : "Send Questions using socket"
+SignalRHub --> Player : "Send Leaderboards using socket"
 
 @enduml

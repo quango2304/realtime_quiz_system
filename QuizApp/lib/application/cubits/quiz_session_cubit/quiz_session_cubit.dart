@@ -21,20 +21,24 @@ class QuizSessionCubit extends Cubit<QuizSessionState> {
     await _quizHubService.startConnection();
     _quizHubService.onReceiveQuestion((question) {
       if (question != null) {
-        emit(QuizSessionQuestionReceived(question, playerList: state.playerList));
+        emit(QuizSessionQuestionReceived(question, playerList: state.playerList, leaderboard: state.leaderboard));
       }
     });
 
     _quizHubService.onReceiveResults((results) {
-      emit(QuizSessionResultsReceived(results, playerList: state.playerList));
+      emit(QuizSessionResultsReceived(results, playerList: state.playerList, leaderboard: state.leaderboard));
     });
 
     _quizHubService.onUpdatePlayerList((playerList) {
-      emit(state.copyWith(playerList: playerList));
+      emit(state.copyWith(playerList: playerList, leaderboard: state.leaderboard));
     });
 
     _quizHubService.onQuizEnded((results) {
-      emit(QuizSessionEnded(results, playerList: state.playerList));
+      emit(QuizSessionEnded(results, playerList: state.playerList, leaderboard: state.leaderboard));
+    });
+
+    _quizHubService.onReceiveLeaderboard((leaderBoard) {
+      emit(state.copyWith(playerList: state.playerList, leaderboard: leaderBoard));
     });
 
     await _quizHubService.joinQuiz(quizId, userName);

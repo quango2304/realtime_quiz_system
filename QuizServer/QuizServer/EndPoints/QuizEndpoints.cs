@@ -11,7 +11,6 @@ namespace QuizServer.EndPoints;
 
 using Models.DBModels;
 using Models.Dtos;
-using Microsoft.AspNetCore.SignalR;
 
 public static class QuizEndpoints
 {
@@ -71,7 +70,7 @@ public static class QuizEndpoints
             }).WithTags("Quiz");
 
         routes.MapPost("/quizzes/{quizId}/submit-answer",
-                async (int quizId, AnswerRequest answerDto, QuizDbContext dbContext) =>
+                async (int quizId, AnswerRequest answerDto, QuizDbContext dbContext, IHubContext<QuizHub> hubContext) =>
                 {
                     // Retrieve the quiz and the related question
                     var quiz = await dbContext.Quizzes
@@ -116,7 +115,23 @@ public static class QuizEndpoints
 
                     dbContext.PlayerAnswers.Add(playerAnswer);
                     await dbContext.SaveChangesAsync();
+                    
+                    // Calculate the leaderboard
+                    var leaderboard = await dbContext.PlayerAnswers
+                        .Where(pa => pa.Question.QuizId == quizId)
+                        .GroupBy(pa => pa.User)
+                        .Select(group => new LeaderboardResponse()
+                        {
+                            UserName = group.Key.Name,
+                            TotalPoints = group.Sum(pa => pa.Point)
+                        })
+                        .OrderByDescending(entry => entry.TotalPoints)
+                        .ToListAsync();
 
+                    // Send the updated leaderboard to all players in the quiz hub
+                    await hubContext.Clients.Group(quizId.ToString())
+                        .SendAsync("ReceiveLeaderboard", leaderboard);
+                    
                     return Results.Ok();
                 })
             .WithName("SubmitAnswer")

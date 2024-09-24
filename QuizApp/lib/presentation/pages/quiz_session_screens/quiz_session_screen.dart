@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizz_app/application/cubits/quiz_session_cubit/quiz_session_cubit.dart';
 import 'package:quizz_app/application/cubits/user_cubit/user_cubit.dart';
+import 'package:quizz_app/domain/models/result_response.dart';
 import 'package:quizz_app/presentation/pages/quiz_session_screens/question_screen.dart';
 import 'package:quizz_app/presentation/pages/quiz_session_screens/question_result_screen.dart';
 import 'package:quizz_app/injectable_config.dart';
 import 'package:quizz_app/presentation/pages/quiz_session_screens/quiz_end_screen.dart';
+import 'package:quizz_app/presentation/pages/quiz_session_screens/waiting_screen.dart';
 
 class QuizSessionScreen extends StatefulWidget {
   final int quizId;
@@ -53,83 +55,77 @@ class _QuizSessionScreenState extends State<QuizSessionScreen> {
             ),
             body: BlocBuilder<QuizSessionCubit, QuizSessionState>(
               builder: (context, state) {
+                Widget stateWidget = const SizedBox();
+                Widget leaderBoardWidget = buildLeaderBoard(state);
                 if (state is QuizSessionQuestionReceived) {
-                  return QuestionScreen(
+                  stateWidget = QuestionScreen(
                     question: state.question,
                     submitAnswer: _submitAnswer,
                   );
                 } else if (state is QuizSessionResultsReceived) {
-                  return QuestionResultScreen(
+                  stateWidget = QuestionResultScreen(
                     results: state.results,
                     selectedOptionIds: selectedOptionIds,
                   );
                 } else if (state is QuizSessionEnded) {
-                  return QuizEndScreen(results: state.results);
+                  leaderBoardWidget = const SizedBox();
+                  stateWidget = QuizEndScreen(results: state.results);
                 } else {
-                  return Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Waiting for quiz to start...',
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueAccent),
-                      ),
-                      const SizedBox(height: 20),
-                      if (state.playerList.isNotEmpty) ...[
-                        const Text(
-                          'Players joined:',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
-                        ),
-                        const SizedBox(height: 10),
-                        ...state.playerList.map((player) => Card(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.person,
-                                            color: Colors.blueAccent),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          player,
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ],
-                                    ),
-                                    const Icon(Icons.check_circle,
-                                        color: Colors.green),
-                                    // Optional: Indicates the player is active
-                                  ],
-                                ),
-                              ),
-                            )),
-                      ],
-                    ],
-                  ));
+                  stateWidget = WaitingScreen(playerList: state.playerList);
                 }
+
+                return Column(
+                  children: [
+                    leaderBoardWidget,
+                    Expanded(
+                      child: stateWidget,
+                    ),
+                  ],
+                );
               },
             ),
           );
         },
       ),
     );
+  }
+
+  ExpansionTile buildLeaderBoard(QuizSessionState state) {
+    final userName = getIt<UserCubit>().getCurrentUserName();
+    final currentUserScore = state.leaderboard
+        .firstWhere(
+          (leaderboard) => leaderboard.userName == userName,
+          orElse: () => LeaderboardResponse(userName: userName, totalPoints: 0),
+        )
+        .totalPoints;
+    var leaderBoardWidget = ExpansionTile(
+      title: Text(
+        'Your Score: $currentUserScore, tap to view leaderboard',
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+      children: state.leaderboard.asMap().entries.map((entry) {
+        int index = entry.key;
+        var leaderboard = entry.value;
+
+        return ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          leading: CircleAvatar(
+            backgroundColor: Colors.blueAccent,
+            foregroundColor: Colors.white,
+            child: Text('${index + 1}'),
+          ),
+          title: Text(
+            leaderboard.userName ?? 'Unknown',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          trailing: Text(
+            '${leaderboard.totalPoints ?? 0} points',
+            style: const TextStyle(color: Colors.green),
+          ),
+        );
+      }).toList(),
+    );
+    return leaderBoardWidget;
   }
 }
