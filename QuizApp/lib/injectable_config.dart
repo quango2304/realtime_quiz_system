@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import "package:get_it/get_it.dart";
 import 'package:injectable/injectable.dart';
 import 'package:openapi/api.dart';
@@ -12,7 +14,8 @@ void configureDependencies() => getIt.init();
 @module
 abstract class RegisterModule {
   @lazySingleton
-  ApiClient apiClient() => ApiClient(basePath: 'http://10.0.2.2:5045');
+  ApiClient apiClient() => ApiClient(
+      basePath: 'http://${Platform.isAndroid ? '10.0.2.2' : 'localhost'}:5045');
 
   @lazySingleton
   QuizApiClient quizClient(ApiClient apiClient) => QuizApiClient(apiClient);
@@ -21,5 +24,6 @@ abstract class RegisterModule {
   UserApiClient userClient(ApiClient apiClient) => UserApiClient(apiClient);
 
   @injectable
-  QuizHubService quizHubService() => QuizHubService('http://10.0.2.2:5045/quizHub');
+  QuizHubService quizHubService() => QuizHubService(
+      'http://${Platform.isAndroid ? '10.0.2.2' : 'localhost'}:5045/quizHub');
 }

@@ -72,7 +72,6 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
       )).toList(),
       userId: userId,
     );
-    var user = getIt.get<UserCubit>().getCurrentUserId();
     newQuizCubit.createQuiz(newQuizRequest);
   }
 
@@ -96,6 +95,7 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
     );
   }
 
+  @override
   @override
   Widget build(BuildContext context) {
     return BlocListener<NewQuizCubit, NewQuizState>(
@@ -160,6 +160,7 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                               ),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
+                            controller: TextEditingController(text: question.text), // Bind value to question text
                             onChanged: (value) {
                               question.text = value;
                             },
@@ -175,7 +176,7 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                             }).toList(),
                             onChanged: (String? newValue) {
                               setState(() {
-                                question.type = newValue;
+                                question.type = newValue!;
                                 if (newValue == 'single') {
                                   for (var option in question.options!) {
                                     option.isCorrect = false;
@@ -203,6 +204,7 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                                         ),
                                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                       ),
+                                      controller: TextEditingController(text: option.text), // Bind option text
                                       onChanged: (value) {
                                         option.text = value;
                                       },
@@ -283,4 +285,5 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
       ),
     );
   }
+
 }

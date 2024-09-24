@@ -73,8 +73,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: ListView(
           children: [
             const SizedBox(height: 30),
             Text(
