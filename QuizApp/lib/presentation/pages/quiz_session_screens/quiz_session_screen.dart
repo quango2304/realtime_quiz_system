@@ -100,7 +100,7 @@ class _QuizSessionScreenState extends State<QuizSessionScreen> {
         .totalPoints;
     var leaderBoardWidget = ExpansionTile(
       title: Text(
-        'Your Score: $currentUserScore, tap to view leaderboard',
+        'Your score: $currentUserScore, tap to view leaderboard',
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
       children: state.leaderboard.asMap().entries.map((entry) {

@@ -11,13 +11,15 @@ public class QuizHub : Hub
     public async Task JoinQuiz(int quizId, string userName)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, quizId.ToString());
-
-        if (!QuizPlayers.ContainsKey(quizId))
+        if (userName != "Admin")
         {
-            QuizPlayers[quizId] = new List<string>();
-        }
+            if (!QuizPlayers.ContainsKey(quizId))
+            {
+                QuizPlayers[quizId] = new List<string>();
+            }
 
-        QuizPlayers[quizId].Add(userName);
-        await Clients.Group(quizId.ToString()).SendAsync("UpdatePlayerList", QuizPlayers[quizId]);
+            QuizPlayers[quizId].Add(userName);
+            await Clients.Group(quizId.ToString()).SendAsync("UpdatePlayerList", QuizPlayers[quizId]);
+        }
     }
 }
