@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/leongo/Desktop/projects/interview_code_challenge/code_challenge_elsa_quiz/QuizServer/QuizServer/QuizServer.csproj": {}
+    "/Users/leongo/Desktop/projects/interview_code_challenge/realtime_quiz_system/QuizServer/QuizServer/QuizServer.csproj": {}
   },
   "projects": {
-    "/Users/leongo/Desktop/projects/interview_code_challenge/code_challenge_elsa_quiz/QuizServer/QuizServer/QuizServer.csproj": {
+    "/Users/leongo/Desktop/projects/interview_code_challenge/realtime_quiz_system/QuizServer/QuizServer/QuizServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/leongo/Desktop/projects/interview_code_challenge/code_challenge_elsa_quiz/QuizServer/QuizServer/QuizServer.csproj",
+        "projectUniqueName": "/Users/leongo/Desktop/projects/interview_code_challenge/realtime_quiz_system/QuizServer/QuizServer/QuizServer.csproj",
         "projectName": "QuizServer",
-        "projectPath": "/Users/leongo/Desktop/projects/interview_code_challenge/code_challenge_elsa_quiz/QuizServer/QuizServer/QuizServer.csproj",
+        "projectPath": "/Users/leongo/Desktop/projects/interview_code_challenge/realtime_quiz_system/QuizServer/QuizServer/QuizServer.csproj",
         "packagesPath": "/Users/leongo/.nuget/packages/",
-        "outputPath": "/Users/leongo/Desktop/projects/interview_code_challenge/code_challenge_elsa_quiz/QuizServer/QuizServer/obj/",
+        "outputPath": "/Users/leongo/Desktop/projects/interview_code_challenge/realtime_quiz_system/QuizServer/QuizServer/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/leongo/.nuget/NuGet/NuGet.Config"

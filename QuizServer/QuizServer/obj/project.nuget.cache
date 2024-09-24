@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yziEnOVlMqk=",
+  "dgSpecHash": "BYZY17d6tgA=",
   "success": true,
-  "projectFilePath": "/Users/leongo/Desktop/projects/interview_code_challenge/code_challenge_elsa_quiz/QuizServer/QuizServer/QuizServer.csproj",
+  "projectFilePath": "/Users/leongo/Desktop/projects/interview_code_challenge/realtime_quiz_system/QuizServer/QuizServer/QuizServer.csproj",
   "expectedPackageFiles": [
     "/Users/leongo/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
     "/Users/leongo/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
