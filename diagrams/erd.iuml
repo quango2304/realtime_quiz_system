@@ -1,42 +1,47 @@
 @startuml erd_diagram
 
 entity "Quiz" {
-  * quizId : UUID
+  * quizId : int
   * title : String
   * createdAt : Date
   * userId : UUID // Foreign key to User
-  * endAt: Date
+  * endAt : Date
 }
 
 entity "Question" {
   * questionId : UUID
   * text : String
   * order : Integer
-  * quizId : UUID
-  * correctAnswer : List<String>
-  * options : List<String>
+  * quizId : int // Foreign key to Quiz
   * maxPoint : Integer
-  * type : String //SINGLE_CHOICE, MULTIPLE_CHOICE, USER_INPUT
+  * type : String //SINGLE_CHOICE, MULTIPLE_CHOICE
 }
 
-entity "User" {
-  can both create quiz or join a quiz
-  * userId : UUID 
-  * name : String
-  * email : String
+entity "QuestionOption" {
+  * id : UUID
+  * text : String
+  * isCorrect : Boolean
+  * questionId : UUID // Foreign key to Question
 }
 
 entity "PlayerAnswer" {
   * playerAnswerId : UUID
-  * questionId : UUID
+  * questionId : UUID // Foreign key to Question
   * userId : UUID // Foreign key to User
-  * selectedAnswer : List<String>
+  * selectedOptions : List<UUID> // List of selected QuestionOption
   * isCorrect : Boolean
-  * point : Integer //point user got for this question
+  * point : Integer
+}
+
+entity "User" {
+  * userId : UUID
+  * name : String
+  * email : String
 }
 
 ' Relationships
 Quiz ||--o{ Question : "contains"
+Question ||--o{ QuestionOption : "has options"
 Question ||--o{ PlayerAnswer : "answered by"
 User ||--o{ PlayerAnswer : "submits"
 User ||--o{ Quiz : "creates"
