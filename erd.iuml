@@ -1,0 +1,44 @@
+@startuml erd_diagram
+
+entity "Quiz" {
+  * quizId : UUID
+  * title : String
+  * createdAt : Date
+  * userId : UUID // Foreign key to User
+  * endAt: Date
+}
+
+entity "Question" {
+  * questionId : UUID
+  * text : String
+  * order : Integer
+  * quizId : UUID
+  * correctAnswer : List<String>
+  * options : List<String>
+  * maxPoint : Integer
+  * type : String //SINGLE_CHOICE, MULTIPLE_CHOICE, USER_INPUT
+}
+
+entity "User" {
+  can both create quiz or join a quiz
+  * userId : UUID 
+  * name : String
+  * email : String
+}
+
+entity "PlayerAnswer" {
+  * playerAnswerId : UUID
+  * questionId : UUID
+  * userId : UUID // Foreign key to User
+  * selectedAnswer : List<String>
+  * isCorrect : Boolean
+  * point : Integer //point user got for this question
+}
+
+' Relationships
+Quiz ||--o{ Question : "contains"
+Question ||--o{ PlayerAnswer : "answered by"
+User ||--o{ PlayerAnswer : "submits"
+User ||--o{ Quiz : "creates"
+
+@enduml

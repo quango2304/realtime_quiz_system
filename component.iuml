@@ -1,0 +1,29 @@
+@startuml RealTimeQuizSystemArchitecture
+
+package "Frontend (Flutter)" {
+  [Admin] 
+  [Player]
+}
+
+package "Backend" {
+  package "Server (.NETCore)" {
+    [QuizAPI] 
+    [SignalRHub] 
+  }
+
+  package "DB" {
+    [PostgreSQL] 
+  }
+}
+
+Admin --> QuizAPI : "Create Quiz"
+Admin --> QuizAPI : "Start Quiz"
+Player --> QuizAPI : "Join Quiz"
+Player --> QuizAPI : "Submit Answer"
+QuizAPI --> PostgreSQL : "Save Data"
+PostgreSQL --> QuizAPI : "Fetch Data"
+QuizAPI --> SignalRHub : "Push Data"
+SignalRHub --> Player : "Send Questions"
+SignalRHub --> Player : "Send Scores"
+
+@enduml

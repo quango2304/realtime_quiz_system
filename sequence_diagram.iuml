@@ -1,0 +1,46 @@
+@startuml StartQuizSessionFlow
+
+actor Admin
+actor Player
+
+participant "Quiz App" as QuizApp
+
+box "Backend"
+participant "Quiz API" as QuizAPI
+participant "SignalR Hub" as SignalRHub
+participant "PostgreSQL" as PostgreSQL
+end box
+
+Admin -> QuizApp: Create quiz
+QuizApp -> QuizAPI: POST /quizzes
+QuizAPI -> PostgreSQL: Save quiz data
+
+Player -> QuizApp: Join quiz
+QuizApp -> QuizAPI: Join quiz with quizId
+QuizAPI -> SignalRHub: Add player to quiz session
+
+Admin -> QuizApp: Start quiz
+QuizApp -> QuizAPI: POST /quizzes/{quizId}/start
+QuizAPI -> SignalRHub: Start quiz session
+
+loop Periodic question sending
+    SignalRHub -> QuizApp: Send question
+    Player -> QuizApp: Submit answer
+    QuizApp -> QuizAPI: POST /quizzes/{quizId}/submit-answer
+    QuizAPI -> PostgreSQL: Save answer
+
+    alt When question time ends(20s)
+        SignalRHub -> PostgreSQL: Fetch leaderboard
+        PostgreSQL --> SignalRHub: Leaderboard data
+        SignalRHub -> QuizApp: Send question result and leaderboard
+        QuizApp -> Player: Display
+    end
+end while (More questions remain)
+
+alt All questions sent
+    SignalRHub -> PostgreSQL: Fetch final leaderboard
+    PostgreSQL --> SignalRHub: Final leaderboard data
+    SignalRHub -> QuizApp: Send final leaderboard
+    QuizApp -> Player: Display final results
+end
+@enduml
